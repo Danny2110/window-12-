@@ -1,0 +1,20 @@
+name: Package Dev Preview
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build dev preview package
+        run: bash installer/scripts/build-dev-preview.sh
+      - name: Upload preview package
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows12-dev-preview
+          path: dist/*

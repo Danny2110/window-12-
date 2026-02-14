@@ -1,0 +1,16 @@
+id,epic,priority,owner,description,acceptance
+FOS-001,build,P0,platform,Create custom base image tooling not derived from Ubuntu,Installer image reproducible in CI
+FOS-002,kernel,P0,core,Apply kernel patchset for low-end desktop responsiveness,Boot and idle benchmarks pass target
+FOS-003,compat,P0,compat,Implement PE launch broker in compatd,Run hello-win32.exe with expected args/env
+FOS-004,compat,P0,compat,Implement registry service HKLM/HKCU views,Read/write regression suite passes
+FOS-005,desktop,P0,shell,Implement taskbar/start/search/notifications shell baseline,All shell integration tests pass
+FOS-006,apps,P0,apps,Ship File Explorer MVP with tabs search and preview,Explorer UX test suite passes
+FOS-007,terminal,P0,devx,PowerShell and CMD compatibility command set baseline,CLI matrix required cases pass
+FOS-008,graphics,P1,graphics,DirectX translation path for D3D11 apps,Target game smoke tests launch
+FOS-009,security,P0,security,Defender-style scanner hooks on download/install,EICAR and policy tests pass
+FOS-010,updates,P0,platform,Implement A/B updater with rollback,Forced bad update rolls back successfully
+FOS-011,ai,P1,ai,Add offline AI assistant with policy-controlled actions,Intent tests pass with audit logs
+FOS-012,hardware,P0,drivers,Printer and Wi-Fi certification matrix baseline,Top 20 devices validated
+FOS-013,browser,P0,browser,Implement browserd policy engine with HTTPS enforce and tracker blocking,Policy suite blocks known tracker hosts and upgrades HTTP
+FOS-014,browser,P1,browser,Integrate sandboxed tab process model in browser runtime,Renderer isolation tests pass
+FOS-015,apps,P0,apps,Deliver core app catalog v1 matching required user categories,All required app IDs present and boot-launchable

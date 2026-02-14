@@ -1,0 +1,5 @@
+artifact=windows12-style-os-dev-preview-0.1.0-20260214T132405Z
+channel=dev-preview
+version=0.1.0
+timestamp=20260214T132405Z
+commit=no-git

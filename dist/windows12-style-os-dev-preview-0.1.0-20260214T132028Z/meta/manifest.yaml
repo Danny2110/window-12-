@@ -1,0 +1,19 @@
+name: windows12-style-os
+channel: dev-preview
+version: 0.1.0
+artifact_prefix: windows12-style-os-devpreview
+components:
+  - crates/compatd
+  - crates/updated
+  - crates/aid
+  - apps/extractx
+  - testing/harness
+  - testing/matrix
+minimum_vm_requirements:
+  cpu: 2
+  ram_mb: 4096
+  disk_gb: 32
+recommended_vm_requirements:
+  cpu: 4
+  ram_mb: 8192
+  disk_gb: 64

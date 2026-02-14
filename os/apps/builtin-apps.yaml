@@ -1,0 +1,43 @@
+apps:
+  - id: explorer
+    name: File Explorer
+    status: required
+  - id: media
+    name: Video Player
+    status: required
+  - id: photo
+    name: Photo Viewer and Editor
+    status: required
+  - id: text-editor
+    name: Text Editor
+    status: required
+  - id: code-editor
+    name: Code Editor
+    status: required
+  - id: settings
+    name: Settings
+    status: required
+  - id: terminal
+    name: Terminal
+    status: required
+  - id: powershell-shell
+    name: PowerShell Compatible Shell
+    status: required
+  - id: task-manager
+    name: Task Manager
+    status: required
+  - id: disk-manager
+    name: Disk Manager
+    status: required
+  - id: device-manager
+    name: Device Manager
+    status: required
+  - id: app-store
+    name: App Installer and Store
+    status: required
+  - id: backup-restore
+    name: Backup and Restore
+    status: required
+  - id: browser
+    name: Browser
+    status: required

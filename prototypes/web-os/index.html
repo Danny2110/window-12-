@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Windows 11-style Web OS Preview</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="desktop" id="desktop">
+    <aside class="widgets-panel hidden panel" id="widgets-panel">
+      <h3>Widgets</h3>
+      <div class="widget-card">Weather: 68 F</div>
+      <div class="widget-card">Calendar: 2 meetings</div>
+      <div class="widget-card">Performance: 3 background apps</div>
+    </aside>
+
+    <aside class="notifications-panel hidden panel" id="notifications-panel">
+      <h3>Notifications</h3>
+      <div class="widget-card">Windows Security: scan completed.</div>
+      <div class="widget-card">ExtractX: archive extracted.</div>
+      <div class="widget-card">System: restart recommended.</div>
+    </aside>
+
+    <aside class="quick-settings hidden panel" id="quick-settings">
+      <h3>Quick Settings</h3>
+      <div class="tile-grid">
+        <button class="tile" data-toggle="wifi">Wi-Fi</button>
+        <button class="tile" data-toggle="bluetooth">Bluetooth</button>
+        <button class="tile" data-toggle="darkmode">Dark Mode</button>
+        <button class="tile" data-toggle="nightlight">Night Light</button>
+      </div>
+      <label>Brightness <input id="brightness" type="range" min="60" max="125" value="100"></label>
+      <label>Volume <input id="volume" type="range" min="0" max="100" value="52"></label>
+    </aside>
+
+    <section class="task-view hidden panel" id="task-view-panel">
+      <div class="task-view-head">
+        <h3>Task View</h3>
+        <button id="add-desktop">+ New Desktop</button>
+      </div>
+      <div id="desktop-list" class="desktop-list"></div>
+      <div id="window-thumbs" class="window-thumbs"></div>
+    </section>
+
+    <section class="start-menu hidden panel" id="start-menu">
+      <input id="start-search" placeholder="Search for apps, settings, files" />
+      <h4>Pinned</h4>
+      <div class="pinned-grid">
+        <button data-open="explorer-window"><img src="icons/explorer.svg" class="app-icon" alt="">Explorer</button>
+        <button data-open="terminal-window"><img src="icons/terminal.svg" class="app-icon" alt="">Terminal</button>
+        <button data-open="settings-window"><img src="icons/settings.svg" class="app-icon" alt="">Settings</button>
+        <button data-open="extract-window"><img src="icons/extract.svg" class="app-icon" alt="">ExtractX</button>
+        <button data-open="ai-window"><img src="icons/ai.svg" class="app-icon" alt="">AI Assistant</button>
+      </div>
+      <h4>Recommended</h4>
+      <p class="small">Roadmap.docx, Windows12Preview.iso, Budget.xlsx</p>
+    </section>
+
+    <section class="window" id="explorer-window" style="top: 72px; left: 72px; width: 900px; height: 560px;">
+      <div class="titlebar">
+        <span>File Explorer</span>
+        <div class="window-controls">
+          <button data-snap="left" data-target="explorer-window">Snap L</button>
+          <button data-snap="right" data-target="explorer-window">Snap R</button>
+          <button data-snap="max" data-target="explorer-window">Max</button>
+          <button class="close" data-close="explorer-window">x</button>
+        </div>
+      </div>
+      <div class="content explorer-shell">
+        <aside class="explorer-sidebar">
+          <button data-nav="C:/Users/Demo/">Home</button>
+          <button data-nav="C:/Users/Demo/Desktop/">Desktop</button>
+          <button data-nav="C:/Users/Demo/Documents/">Documents</button>
+          <button data-nav="C:/Users/Demo/Downloads/">Downloads</button>
+          <button data-nav="C:/Users/Demo/Pictures/">Pictures</button>
+          <button data-nav="C:/Program Files/">Program Files</button>
+        </aside>
+        <section class="explorer-main">
+          <div class="explorer-top">
+            <div id="explorer-path" class="pathbar"></div>
+            <input id="explorer-search" placeholder="Search current folder" />
+          </div>
+          <div class="toolbar">
+            <button id="new-folder-btn">New Folder</button>
+            <button id="rename-item-btn">Rename</button>
+            <button data-open="terminal-window">Open Terminal</button>
+            <button data-open="settings-window">Open Settings</button>
+            <button data-open="extract-window">Open ExtractX</button>
+          </div>
+          <div id="drop-hint" class="drop-hint hidden">Drop a .zip file to extract into Downloads</div>
+          <div id="explorer-grid" class="explorer-grid"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="window hidden" id="terminal-window" style="top: 110px; left: 170px; width: 700px; height: 390px;">
+      <div class="titlebar">
+        <span>Windows Terminal</span>
+        <div class="window-controls">
+          <button data-snap="left" data-target="terminal-window">Snap L</button>
+          <button data-snap="right" data-target="terminal-window">Snap R</button>
+          <button data-snap="max" data-target="terminal-window">Max</button>
+          <button class="close" data-close="terminal-window">x</button>
+        </div>
+      </div>
+      <div class="content terminal">
+        <pre id="terminal-output">Windows Terminal Preview
+help, dir, cd <path>, start ms-settings, start explorer</pre>
+        <div class="terminal-input-row"><span>PS C:\></span><input id="terminal-input" autocomplete="off" /></div>
+      </div>
+    </section>
+
+    <section class="window hidden" id="settings-window" style="top: 90px; left: 240px; width: 780px; height: 500px;">
+      <div class="titlebar">
+        <span>Settings</span>
+        <div class="window-controls">
+          <button data-snap="left" data-target="settings-window">Snap L</button>
+          <button data-snap="right" data-target="settings-window">Snap R</button>
+          <button data-snap="max" data-target="settings-window">Max</button>
+          <button class="close" data-close="settings-window">x</button>
+        </div>
+      </div>
+      <div class="content settings-layout">
+        <aside class="settings-nav">
+          <button data-settings="system" class="active">System</button>
+          <button data-settings="personalization">Personalization</button>
+          <button data-settings="apps">Apps</button>
+          <button data-settings="privacy">Privacy</button>
+          <button data-settings="update">Windows Update</button>
+        </aside>
+        <section id="settings-panel" class="settings-panel"></section>
+      </div>
+    </section>
+
+    <section class="window hidden" id="extract-window" style="top: 150px; left: 560px; width: 470px; height: 350px;">
+      <div class="titlebar">
+        <span>ExtractX</span>
+        <div class="window-controls"><button class="close" data-close="extract-window">x</button></div>
+      </div>
+      <div class="content">
+        <p class="small">Real browser-side ZIP extraction is enabled. RAR/7Z/TAR remain preview-only.</p>
+        <input type="file" id="archive-input" accept=".zip,.rar,.7z,.tar,.tar.gz,.tgz" />
+        <button id="extract-btn">Extract Into Downloads</button>
+        <div id="extract-status" class="status"></div>
+      </div>
+    </section>
+
+    <section class="window hidden" id="ai-window" style="top: 180px; left: 620px; width: 420px; height: 290px;">
+      <div class="titlebar">
+        <span>AI Assistant</span>
+        <div class="window-controls"><button class="close" data-close="ai-window">x</button></div>
+      </div>
+      <div class="content ai-panel">
+        <input id="ai-input" placeholder="Ask assistant (open settings, find files, optimize)" />
+        <button id="ai-run">Run</button>
+        <div id="ai-output" class="ai-output"></div>
+      </div>
+    </section>
+
+    <div id="context-menu" class="context-menu hidden">
+      <button data-action="open">Open</button>
+      <button data-action="rename">Rename</button>
+      <button data-action="copy-path">Copy Path</button>
+      <button data-action="delete">Delete</button>
+      <button data-action="properties">Properties</button>
+    </div>
+
+    <footer class="taskbar">
+      <button class="icon-btn" id="widgets-btn"><img src="icons/widgets.svg" class="app-icon" alt="">Widgets</button>
+      <div class="task-center">
+        <button class="icon-btn" id="task-view-btn"><img src="icons/taskview.svg" class="app-icon" alt="">Task View</button>
+        <button class="icon-btn" id="start-btn"><img src="icons/start.svg" class="app-icon" alt="">Start</button>
+        <button class="icon-btn" data-open="explorer-window"><img src="icons/explorer.svg" class="app-icon" alt="">Explorer</button>
+        <button class="icon-btn" data-open="terminal-window"><img src="icons/terminal.svg" class="app-icon" alt="">Terminal</button>
+        <button class="icon-btn" data-open="settings-window"><img src="icons/settings.svg" class="app-icon" alt="">Settings</button>
+        <button class="icon-btn" data-open="extract-window"><img src="icons/extract.svg" class="app-icon" alt="">ExtractX</button>
+      </div>
+      <div class="tray">
+        <button class="icon-btn" id="quick-btn">Quick</button>
+        <button class="icon-btn" id="notif-btn"><img src="icons/alerts.svg" class="app-icon" alt="">Alerts</button>
+        <div class="clock" id="clock"></div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

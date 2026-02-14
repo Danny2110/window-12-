@@ -1,0 +1,30 @@
+name: Nightly Compatibility
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  extractx-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: ExtractX smoke test
+        run: bash testing/extractx/smoke_extractx.sh
+
+  nightly-harness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run compatibility harness
+        run: APP_TIMEOUT_SECONDS=30 bash testing/harness/run_compat.sh
+      - name: Publish results artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-harness-results
+          path: testing/results

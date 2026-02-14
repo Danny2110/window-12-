@@ -1,0 +1,9 @@
+[package]
+name = "shelld"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+platform-contracts = { path = "../platform-contracts" }

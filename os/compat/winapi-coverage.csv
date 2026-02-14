@@ -1,0 +1,12 @@
+module,target_coverage_phase,priority,notes
+kernel32,phase-1,P0,process/thread/file primitives
+user32,phase-1,P0,window/input essentials
+gdi32,phase-1,P1,basic desktop rendering path
+advapi32,phase-1,P0,security and registry core
+comctl32,phase-2,P1,common controls compatibility
+ole32,phase-2,P1,COM activation and marshaling
+winmm,phase-2,P2,legacy audio timers
+d3d9,phase-2,P1,games legacy path
+d3d11,phase-2,P0,mainstream game/app path
+d3d12,phase-3,P1,vkd3d-based translation path
+msi-engine,phase-1,P0,installer behavior and rollback

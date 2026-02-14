@@ -1,0 +1,12 @@
+case_id,status,required,details
+APP-001,BLOCKED,true,App/runtime\ missing:\ sh:\ notepad++.exe:\ command\ not\ found
+APP-002,BLOCKED,true,App/runtime\ missing:\ sh:\ 7zFM.exe:\ command\ not\ found
+APP-003,BLOCKED,true,App/runtime\ missing:\ sh:\ Code.exe:\ command\ not\ found
+APP-004,BLOCKED,true,App/runtime\ missing:\ sh:\ git.exe:\ command\ not\ found
+APP-005,BLOCKED,false,App/runtime\ missing:\ sh:\ slack.exe:\ command\ not\ found
+APP-006,BLOCKED,false,App/runtime\ missing:\ sh:\ chrome.exe:\ command\ not\ found
+CLI-001,BLOCKED,true,Command\ unavailable\ or\ failed
+CLI-002,BLOCKED,true,Command\ unavailable\ or\ failed
+CLI-003,BLOCKED,false,Command\ unavailable\ or\ failed
+CLI-004,BLOCKED,true,Command\ unavailable\ or\ failed
+CLI-005,BLOCKED,true,Command\ unavailable\ or\ failed

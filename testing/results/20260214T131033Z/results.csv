@@ -1,0 +1,12 @@
+case_id,status,required,details
+APP-001,BLOCKED,true,App\ launch\ simulation\ only\;\ integration\ runner\ not\ wired
+APP-002,BLOCKED,true,App\ launch\ simulation\ only\;\ integration\ runner\ not\ wired
+APP-003,BLOCKED,true,App\ launch\ simulation\ only\;\ integration\ runner\ not\ wired
+APP-004,BLOCKED,true,App\ launch\ simulation\ only\;\ integration\ runner\ not\ wired
+APP-005,BLOCKED,false,App\ launch\ simulation\ only\;\ integration\ runner\ not\ wired
+APP-006,BLOCKED,false,App\ launch\ simulation\ only\;\ integration\ runner\ not\ wired
+CLI-001,BLOCKED,true,Command\ unavailable\ or\ failed
+CLI-002,BLOCKED,true,Command\ unavailable\ or\ failed
+CLI-003,BLOCKED,false,Command\ unavailable\ or\ failed
+CLI-004,BLOCKED,true,Command\ unavailable\ or\ failed
+CLI-005,BLOCKED,true,Command\ unavailable\ or\ failed

@@ -1,0 +1,24 @@
+name: Build Bootable ISO
+
+on:
+  workflow_dispatch:
+
+jobs:
+  iso:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build bootable ISO
+        run: bash installer/scripts/build-iso-linux.sh
+      - name: Upload ISO artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows12-style-os-iso
+          path: installer/live/work/live-image-amd64.hybrid.iso
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows12-style-os-iso-logs
+          path: installer/live/work

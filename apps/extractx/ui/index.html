@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ExtractX UI Preview</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="stage">
+    <section class="glass-card">
+      <header>
+        <h1>ExtractX</h1>
+        <p>Archive extraction with a modern Windows 12-style glass interface.</p>
+      </header>
+
+      <label>Archive</label>
+      <div class="row">
+        <input type="text" placeholder="C:\\Users\\you\\Downloads\\project.7z" />
+        <button>Browse</button>
+      </div>
+
+      <label>Destination</label>
+      <div class="row">
+        <input type="text" placeholder="C:\\Users\\you\\Documents\\Extracted" />
+        <button>Browse</button>
+      </div>
+
+      <div class="chips">
+        <span>.zip</span><span>.rar</span><span>.7z</span><span>.tar.gz</span>
+      </div>
+
+      <footer>
+        <button class="primary">Extract Now</button>
+        <button class="ghost">Queue</button>
+      </footer>
+    </section>
+  </main>
+</body>
+</html>

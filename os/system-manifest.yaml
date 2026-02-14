@@ -1,0 +1,59 @@
+os_name: AsterOS
+version: 0.1.0-alpha
+base:
+  kernel: linux-lts-patched
+  distro_model: custom-non-ubuntu
+boot:
+  uefi: true
+  secure_boot_path: planned
+filesystem:
+  base: btrfs
+  compatibility_layer: ntfs-behavior-overlay
+security:
+  sandboxed_apps: true
+  defender_service: defenderd
+  encryption: luks2
+compatibility:
+  exe_support: via-compatd
+  msi_support: via-installer-bridge
+  registry: regd
+  directx_translation: dxvk-vkd3d-strategy
+desktop:
+  shell: shelld
+  compositor: wayland-acrylic
+  features:
+    - taskbar
+    - start-search
+    - snap-layouts
+    - notifications
+    - multi-monitor
+apps:
+  required:
+    - explorer
+    - media
+    - photo
+    - text-editor
+    - code-editor
+    - settings
+    - terminal
+    - powershell-shell
+    - task-manager
+    - disk-manager
+    - device-manager
+    - app-store
+    - backup-restore
+    - browser
+ai:
+  assistant: aid
+  offline_mode: true
+  voice_text: true
+performance_targets:
+  boot_seconds_max: 25
+  idle_ram_mb_max: 2200
+  idle_cpu_percent_max: 3
+hardware:
+  wifi: required
+  bluetooth: required
+  usb: required
+  printers: required
+  gpu_fallback: required

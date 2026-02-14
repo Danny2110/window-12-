@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  rust-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build Rust workspace
+        run: cargo build --workspace
+
+  python-and-extractx:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Python syntax check
+        run: python -m py_compile apps/extractx/extractx.py
+      - name: ExtractX smoke test
+        run: bash testing/extractx/smoke_extractx.sh
+
+  harness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run compatibility harness
+        run: bash testing/harness/run_compat.sh
+      - name: Upload harness results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: harness-results
+          path: testing/results

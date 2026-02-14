@@ -1,0 +1,32 @@
+system:
+  - File Explorer
+  - Task Manager
+  - Disk Manager
+  - Device Manager
+  - Backup and Restore
+  - Settings
+  - Update Manager
+  - App Installer and Store
+creative_media:
+  - Video Player
+  - Photo Viewer
+  - Photo Editor
+  - Screen Recorder
+  - Audio Recorder
+productivity:
+  - Text Editor
+  - Code Editor
+  - Notes
+  - Calendar
+  - Calculator
+developer_tools:
+  - Terminal
+  - PowerShell Compatible Shell
+  - Bash Support
+  - Zsh Support
+  - SDK Tools
+  - Package Manager
+browser:
+  - Aster Browser
+ai_assistant:
+  - OS-level Assistant (Voice + Text)

@@ -1,0 +1,1 @@
+/Users/soares10/windows12-style-os/target/debug/updated: /Users/soares10/windows12-style-os/crates/platform-contracts/src/lib.rs /Users/soares10/windows12-style-os/crates/updated/src/main.rs /Users/soares10/windows12-style-os/crates/updated/src/service.rs

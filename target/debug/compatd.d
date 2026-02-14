@@ -1,0 +1,1 @@
+/Users/soares10/windows12-style-os/target/debug/compatd: /Users/soares10/windows12-style-os/crates/compatd/src/main.rs /Users/soares10/windows12-style-os/crates/compatd/src/service.rs /Users/soares10/windows12-style-os/crates/platform-contracts/src/lib.rs

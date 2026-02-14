@@ -1,0 +1,34 @@
+name: Aster Browser
+engine:
+  render_core: servo-inspired-custom-core
+  javascript_runtime: standards-compliant-jit
+  process_model: multi-process
+performance:
+  low_ram_mode: true
+  tab_discarding: true
+  startup_optimization: true
+security:
+  tracker_blocking: enabled
+  anti_malware_url_scan: enabled
+  tab_sandbox: strict
+  password_manager: local_encrypted
+  https_enforcement: enabled
+features:
+  tab_groups: true
+  vertical_tabs: true
+  workspaces: true
+  ad_blocker: built_in
+  reader_mode: true
+  screenshot_tool: true
+  download_manager: true
+  extensions: webextensions-compatible
+  developer_tools: integrated
+  sync: optional-end-to-end
+  offline_mode: true
+ai:
+  search_assistant: enabled
+  summarize_pages: enabled
+  rewrite_text: enabled
+  coding_assistant: enabled
+  voice_browsing: enabled
+  privacy_mode: local-first

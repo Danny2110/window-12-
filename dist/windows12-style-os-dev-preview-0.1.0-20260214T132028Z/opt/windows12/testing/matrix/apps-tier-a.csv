@@ -1,0 +1,8 @@
+case_id,tier,app,installer_type,launch_command,required,owner,notes
+APP-001,A,Notepad++,EXE,notepad++.exe,true,compat-team,Text editor baseline
+APP-002,A,7-Zip,MSI,7zFM.exe,true,compat-team,Archive manager
+APP-003,A,VS Code,EXE,Code.exe,true,devex,Developer baseline
+APP-004,A,Git for Windows,EXE,git.exe --version,true,devex,CLI workflow
+APP-005,A,Slack,EXE,slack.exe,false,compat-team,Collaboration app
+APP-006,A,Chromium-based Browser,EXE,chrome.exe,false,compat-team,General web support
+APP-007,A,ExtractX,BUILTIN,bash testing/extractx/smoke_extractx.sh,true,core-apps,Built-in archive extraction smoke

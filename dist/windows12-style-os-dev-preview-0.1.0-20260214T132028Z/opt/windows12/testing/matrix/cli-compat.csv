@@ -1,0 +1,6 @@
+case_id,shell,command,expected_pattern,required,owner
+CLI-001,powershell,pwsh -NoLogo -Command "$PSVersionTable.PSVersion.Major",7,true,devex
+CLI-002,cmd,cmd /c "echo hello",hello,true,devex
+CLI-003,terminal,wt --version,Windows Terminal,false,shell-team
+CLI-004,powershell,pwsh -NoLogo -Command "Get-ChildItem | Measure-Object | Select-Object -ExpandProperty Count",,true,devex
+CLI-005,cmd,cmd /c "for %i in (1 2 3) do @echo %i",1,true,devex

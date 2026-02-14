@@ -43,6 +43,10 @@ make build
 make run-compatd
 make run-updated
 make run-aid
+make run-shelld
+make run-regd
+make run-fsd
+make run-browserd
 make pycheck
 make smoke-extractx
 make test-harness
@@ -62,4 +66,25 @@ make run-extractx
 - Portable preview package: `make package-preview` (outputs to `dist/`)
 - ISO build path (Linux host): `make build-iso-linux`
 - VM boot script: `installer/scripts/test-in-qemu.sh`
+- USB writer scripts: `installer/usb/README.md`
+
+## Full OS Replacement Track
+
+- Architecture: `docs/full-os/01-full-replacement-architecture.md`
+- Subsystem contracts: `docs/full-os/02-subsystem-contracts.md`
+- Browser and app stack: `docs/full-os/03-browser-and-app-stack.md`
+- Install-ready ISO + USB: `docs/full-os/04-install-ready-iso-and-usb.md`
+- System manifest: `os/system-manifest.yaml`
+- WinAPI coverage seed: `os/compat/winapi-coverage.csv`
+- Built-in apps manifest: `os/apps/builtin-apps.yaml`
+- Full app catalog: `os/apps/core-app-catalog.yaml`
+- Browser manifest: `os/browser/browser-manifest.yaml`
+- Backlog and roadmap: `planning/full-os/backlog.csv`, `planning/full-os/roadmap.md`
 # window-12-
+
+## Browser Test Preview
+
+You can test a browser-based Windows 12-style UX prototype here:
+
+- `prototypes/web-os/index.html`
+- `prototypes/web-os/README.md`
