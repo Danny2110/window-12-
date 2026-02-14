@@ -52,7 +52,15 @@ libarchive-tools
 PKGS
 
 pushd "$WORK_DIR" >/dev/null
-lb config --mode debian --distribution bookworm --debian-installer live --archive-areas "main contrib non-free"
+lb config \
+  --mode debian \
+  --distribution bookworm \
+  --debian-installer live \
+  --archive-areas "main contrib non-free" \
+  --mirror-bootstrap "http://deb.debian.org/debian/" \
+  --mirror-chroot "http://deb.debian.org/debian/" \
+  --mirror-binary "http://deb.debian.org/debian/" \
+  --security false
 mkdir -p config/package-lists config/includes.chroot
 cp package-lists.list.chroot config/package-lists/windows12.list.chroot
 cp -R includes.chroot/* config/includes.chroot/

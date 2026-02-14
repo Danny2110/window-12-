@@ -14,6 +14,14 @@ jobs:
       - name: Fix permissions for artifacts
         if: always()
         run: sudo chown -R $USER:$USER installer/live/work || true
+      - name: Create log bundle
+        if: always()
+        run: |
+          mkdir -p /tmp/iso-logs
+          cp -f installer/live/work/lb-build.log /tmp/iso-logs/ 2>/dev/null || true
+          cp -f installer/live/work/config/bootstrap /tmp/iso-logs/ 2>/dev/null || true
+          cp -f installer/live/work/config/common /tmp/iso-logs/ 2>/dev/null || true
+          tar -czf /tmp/windows12-iso-logs.tgz -C /tmp iso-logs
       - name: Upload ISO artifact
         uses: actions/upload-artifact@v4
         with:
@@ -24,6 +32,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows12-style-os-iso-logs
-          path: |
-            installer/live/work/*.log
-            installer/live/work/config
+          path: /tmp/windows12-iso-logs.tgz
