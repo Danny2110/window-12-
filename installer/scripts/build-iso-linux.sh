@@ -59,11 +59,28 @@ lb config \
   --archive-areas "main contrib non-free" \
   --mirror-bootstrap "http://deb.debian.org/debian/" \
   --mirror-chroot "http://deb.debian.org/debian/" \
+  --mirror-chroot-security "http://deb.debian.org/debian-security/" \
   --mirror-binary "http://deb.debian.org/debian/" \
-  --security false
+  --mirror-binary-security "http://deb.debian.org/debian-security/" \
+  --security true
 mkdir -p config/package-lists config/includes.chroot
 cp package-lists.list.chroot config/package-lists/windows12.list.chroot
 cp -R includes.chroot/* config/includes.chroot/
+mkdir -p config/archives
+cat > config/archives/aster.list.chroot <<'SRC'
+deb http://deb.debian.org/debian bookworm main contrib non-free
+deb http://deb.debian.org/debian bookworm-updates main contrib non-free
+deb http://deb.debian.org/debian-security bookworm-security main contrib non-free
+SRC
+cat > config/archives/aster.list.binary <<'SRC'
+deb http://deb.debian.org/debian bookworm main contrib non-free
+deb http://deb.debian.org/debian bookworm-updates main contrib non-free
+deb http://deb.debian.org/debian-security bookworm-security main contrib non-free
+SRC
+# Force correct Debian Bookworm security suite naming (bookworm-security).
+find config -type f -name "*.list*" -o -name "sources.list*" | while read -r f; do
+  sed -i 's#security.debian.org[[:space:]]\\+bookworm/updates#deb.debian.org/debian-security bookworm-security#g' "$f" || true
+done
 
 echo "Starting lb build..."
 if ! sudo lb build 2>&1 | tee "$WORK_DIR/lb-build.log"; then
