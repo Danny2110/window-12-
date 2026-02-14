@@ -63,28 +63,34 @@ lb config \
   --archive-areas "main contrib non-free" \
   --mirror-bootstrap "http://deb.debian.org/debian/" \
   --mirror-chroot "http://deb.debian.org/debian/" \
-  --mirror-chroot-security "http://deb.debian.org/debian-security/" \
   --mirror-binary "http://deb.debian.org/debian/" \
-  --mirror-binary-security "http://deb.debian.org/debian-security/" \
-  --security true
+  --security false
 mkdir -p config/package-lists config/includes.chroot
 cp package-lists.list.chroot config/package-lists/windows12.list.chroot
 cp -R includes.chroot/* config/includes.chroot/
+# Explicit apt sources for live-build chroot/binary stages.
 mkdir -p config/archives
-cat > config/archives/aster.list.chroot <<'SRC'
+cat > config/archives/windows12.list.chroot <<'CHROOTSRC'
 deb http://deb.debian.org/debian bookworm main contrib non-free
 deb http://deb.debian.org/debian bookworm-updates main contrib non-free
 deb http://deb.debian.org/debian-security bookworm-security main contrib non-free
-SRC
-cat > config/archives/aster.list.binary <<'SRC'
+CHROOTSRC
+cat > config/archives/windows12.list.binary <<'BINSRC'
 deb http://deb.debian.org/debian bookworm main contrib non-free
 deb http://deb.debian.org/debian bookworm-updates main contrib non-free
 deb http://deb.debian.org/debian-security bookworm-security main contrib non-free
-SRC
-# Force correct Debian Bookworm security suite naming (bookworm-security).
-find config -type f -name "*.list*" -o -name "sources.list*" | while read -r f; do
-  sed -i 's#security.debian.org[[:space:]]\\+bookworm/updates#deb.debian.org/debian-security bookworm-security#g' "$f" || true
+BINSRC
+mkdir -p config/hooks/normal
+cat > config/hooks/normal/9999-fix-security-sources.chroot <<'HOOK'
+#!/bin/sh
+set -eu
+for f in /etc/apt/sources.list /etc/apt/sources.list.d/*.list; do
+  [ -f "$f" ] || continue
+  sed -i 's#deb[[:space:]]\+http://security.debian.org[[:space:]]\+bookworm/updates#deb http://deb.debian.org/debian-security bookworm-security#g' "$f" || true
+  sed -i 's#deb[[:space:]]\+http://deb.debian.org/debian-security[[:space:]]\+bookworm/updates#deb http://deb.debian.org/debian-security bookworm-security#g' "$f" || true
 done
+HOOK
+chmod +x config/hooks/normal/9999-fix-security-sources.chroot
 
 echo "Starting lb build..."
 if ! $SUDO lb build 2>&1 | tee "$WORK_DIR/lb-build.log"; then
