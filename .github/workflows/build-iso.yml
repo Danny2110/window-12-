@@ -11,6 +11,9 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: Build bootable ISO
         run: bash installer/scripts/build-iso-linux.sh
+      - name: Fix permissions for artifacts
+        if: always()
+        run: sudo chown -R $USER:$USER installer/live/work || true
       - name: Upload ISO artifact
         uses: actions/upload-artifact@v4
         with:
@@ -21,4 +24,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows12-style-os-iso-logs
-          path: installer/live/work
+          path: |
+            installer/live/work/*.log
+            installer/live/work/config

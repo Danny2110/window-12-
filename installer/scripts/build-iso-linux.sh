@@ -58,6 +58,8 @@ cp package-lists.list.chroot config/package-lists/windows12.list.chroot
 cp -R includes.chroot/* config/includes.chroot/
 
 sudo lb build
+# live-build creates root-owned cache trees; hand ownership back to runner for CI artifact steps.
+sudo chown -R "$(id -u):$(id -g)" "$WORK_DIR" || true
 popd >/dev/null
 
 echo "ISO build complete. Check: $WORK_DIR/live-image-amd64.hybrid.iso"
