@@ -4,6 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 WORK_DIR="$ROOT_DIR/installer/live/work"
 OVERLAY_DIR="$WORK_DIR/includes.chroot/opt/windows12"
+export DEBIAN_FRONTEND=noninteractive
 
 require_cmd() {
   command -v "$1" >/dev/null 2>&1 || {
@@ -22,8 +23,8 @@ fi
 if ! command -v lb >/dev/null 2>&1; then
   if command -v apt-get >/dev/null 2>&1; then
     echo "Installing live-build dependencies..."
-    sudo apt-get update
-    sudo apt-get install -y live-build debootstrap squashfs-tools xorriso
+    sudo apt-get update -y
+    sudo apt-get install -y --no-install-recommends live-build debootstrap squashfs-tools xorriso
   else
     echo "Missing required command: lb (live-build)" >&2
     exit 1
@@ -46,9 +47,8 @@ cp -R "$ROOT_DIR/testing/matrix" "$OVERLAY_DIR/testing/"
 cat > "$WORK_DIR/package-lists.list.chroot" <<PKGS
 python3
 python3-tk
-p7zip-full
-unrar-free
 unzip
+libarchive-tools
 PKGS
 
 pushd "$WORK_DIR" >/dev/null
@@ -57,7 +57,12 @@ mkdir -p config/package-lists config/includes.chroot
 cp package-lists.list.chroot config/package-lists/windows12.list.chroot
 cp -R includes.chroot/* config/includes.chroot/
 
-sudo lb build
+echo "Starting lb build..."
+if ! sudo lb build 2>&1 | tee "$WORK_DIR/lb-build.log"; then
+  echo "lb build failed; last 200 lines:"
+  tail -n 200 "$WORK_DIR/lb-build.log" || true
+  exit 100
+fi
 # live-build creates root-owned cache trees; hand ownership back to runner for CI artifact steps.
 sudo chown -R "$(id -u):$(id -g)" "$WORK_DIR" || true
 popd >/dev/null
