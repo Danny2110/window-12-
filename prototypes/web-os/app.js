@@ -1,5 +1,7 @@
 const desktop = document.getElementById("desktop");
 const startMenu = document.getElementById("start-menu");
+const startSearch = document.getElementById("start-search");
+const globalSearch = document.getElementById("global-search");
 const widgetsPanel = document.getElementById("widgets-panel");
 const notificationsPanel = document.getElementById("notifications-panel");
 const quickSettings = document.getElementById("quick-settings");
@@ -19,6 +21,11 @@ const archiveInput = document.getElementById("archive-input");
 const extractStatus = document.getElementById("extract-status");
 const newFolderBtn = document.getElementById("new-folder-btn");
 const renameItemBtn = document.getElementById("rename-item-btn");
+const bluetoothPanel = document.getElementById("bluetooth-panel");
+const browserFrame = document.getElementById("browser-frame");
+const browserUrl = document.getElementById("browser-url");
+const browserStatusText = document.getElementById("browser-status-text");
+const networkStatus = document.getElementById("network-status");
 
 const STORAGE_KEY = "windows11_web_os_preview_v1";
 
@@ -39,6 +46,11 @@ const state = {
   },
   brightness: 100,
   volume: 52,
+  wallpaper: "win11",
+  wallpaperData: "",
+  bluetoothDevices: [],
+  browserHistory: ["https://example.com"],
+  browserIndex: 0,
 };
 
 const DEFAULT_FS_MAP = {
@@ -85,6 +97,11 @@ function persistState() {
         toggles: state.toggles,
         brightness: state.brightness,
         volume: state.volume,
+        wallpaper: state.wallpaper,
+        wallpaperData: state.wallpaperData,
+        bluetoothDevices: state.bluetoothDevices,
+        browserHistory: state.browserHistory,
+        browserIndex: state.browserIndex,
       },
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
@@ -107,8 +124,38 @@ function loadState() {
       if (parsed.state.toggles && typeof parsed.state.toggles === "object") state.toggles = { ...state.toggles, ...parsed.state.toggles };
       if (typeof parsed.state.brightness === "number") state.brightness = parsed.state.brightness;
       if (typeof parsed.state.volume === "number") state.volume = parsed.state.volume;
+      if (typeof parsed.state.wallpaper === "string") state.wallpaper = parsed.state.wallpaper;
+      if (typeof parsed.state.wallpaperData === "string") state.wallpaperData = parsed.state.wallpaperData;
+      if (Array.isArray(parsed.state.bluetoothDevices)) state.bluetoothDevices = parsed.state.bluetoothDevices;
+      if (Array.isArray(parsed.state.browserHistory) && parsed.state.browserHistory.length > 0) state.browserHistory = parsed.state.browserHistory;
+      if (typeof parsed.state.browserIndex === "number") state.browserIndex = parsed.state.browserIndex;
     }
   } catch (_) {}
+}
+
+function applyWallpaper() {
+  document.body.classList.remove("wallpaper-win11", "wallpaper-slate", "wallpaper-night");
+  if (state.wallpaper === "custom") {
+    if (state.wallpaperData) {
+      document.body.style.setProperty("--wallpaper-image", `url('${state.wallpaperData}')`);
+      document.body.style.setProperty("--wallpaper-opacity", "1");
+    }
+    return;
+  }
+  const map = {
+    win11: "wallpaper-win11",
+    slate: "wallpaper-slate",
+    night: "wallpaper-night",
+  };
+  document.body.classList.add(map[state.wallpaper] || "wallpaper-win11");
+}
+
+function setCustomWallpaper(dataUrl) {
+  state.wallpaperData = dataUrl;
+  document.body.style.setProperty("--wallpaper-image", `url('${dataUrl}')`);
+  document.body.style.setProperty("--wallpaper-opacity", "1");
+  state.wallpaper = "custom";
+  persistState();
 }
 
 function norm(path) {
@@ -308,6 +355,7 @@ function togglePanel(panel) {
   const isHidden = panel.classList.contains("hidden");
   [startMenu, widgetsPanel, notificationsPanel, quickSettings, taskViewPanel].forEach((p) => p.classList.add("hidden"));
   if (isHidden) panel.classList.remove("hidden");
+  if (panel === quickSettings && isHidden) renderBluetoothPanel();
 }
 
 function renderTaskView() {
@@ -345,6 +393,64 @@ function applyTheme() {
   document.body.style.filter = `brightness(${state.brightness}%)`;
 }
 
+function normalizeWebUrl(value) {
+  const v = value.trim();
+  if (!v) return "https://example.com";
+  if (/^https?:\/\//i.test(v)) return v;
+  if (v.includes(" ")) return `https://www.bing.com/search?q=${encodeURIComponent(v)}`;
+  return `https://${v}`;
+}
+
+function updateNetworkStatus() {
+  if (!networkStatus) return;
+  networkStatus.textContent = navigator.onLine ? "Network: online" : "Network: offline";
+}
+
+function navigateBrowser(target, pushHistory = true) {
+  const url = normalizeWebUrl(target);
+  browserUrl.value = url;
+  browserFrame.src = url;
+  browserStatusText.textContent = `Loading ${url}`;
+  if (pushHistory) {
+    state.browserHistory = state.browserHistory.slice(0, state.browserIndex + 1);
+    state.browserHistory.push(url);
+    state.browserIndex = state.browserHistory.length - 1;
+    persistState();
+  }
+}
+
+function renderBluetoothPanel() {
+  if (!bluetoothPanel) return;
+  const supported = "bluetooth" in navigator;
+  const entries = state.bluetoothDevices.length
+    ? state.bluetoothDevices.map((d) => `<div class="device-row"><span>${d.name}</span><span>${d.connected ? "Connected" : "Saved"}</span></div>`).join("")
+    : '<div class="small">No paired devices yet.</div>';
+  bluetoothPanel.innerHTML = `
+    <div class="settings-line">
+      <span>${supported ? "Bluetooth available" : "Web Bluetooth not available in this browser"}</span>
+      <button id="bluetooth-scan">${supported ? "Pair Device" : "Unavailable"}</button>
+    </div>
+    ${entries}
+  `;
+  const scanBtn = document.getElementById("bluetooth-scan");
+  if (scanBtn && supported) {
+    scanBtn.addEventListener("click", async () => {
+      try {
+        const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true });
+        if (!state.bluetoothDevices.some((d) => d.id === device.id)) {
+          state.bluetoothDevices.push({ id: device.id, name: device.name || "Bluetooth Device", connected: true });
+        }
+        state.toggles.bluetooth = true;
+        renderTiles();
+        renderBluetoothPanel();
+        persistState();
+      } catch (_) {
+        bluetoothPanel.insertAdjacentHTML("beforeend", '<div class="small">Pairing was canceled.</div>');
+      }
+    });
+  }
+}
+
 const settingsViews = {
   system: () => `
     <h3>System</h3>
@@ -352,12 +458,21 @@ const settingsViews = {
     <div class="settings-line"><span>Night light</span><input id="set-night" type="checkbox" ${state.toggles.nightlight ? "checked" : ""}></div>
     <div class="settings-line"><span>Brightness</span><input id="set-bright" type="range" min="60" max="125" value="${state.brightness}"></div>
     <div class="settings-line"><span>Volume</span><input id="set-vol" type="range" min="0" max="100" value="${state.volume}"></div>
+    <div class="settings-line"><span>Internet</span><span>${navigator.onLine ? "Connected" : "Offline"}</span></div>
+    <div class="settings-line"><span>Bluetooth devices</span><span>${state.bluetoothDevices.length}</span></div>
   `,
   personalization: () => `
     <h3>Personalization</h3>
     <div class="settings-line"><span>Taskbar alignment</span><span>Center</span></div>
     <div class="settings-line"><span>Accent color</span><span>Neutral Slate</span></div>
     <div class="settings-line"><span>Transparency effects</span><span>On</span></div>
+    <div class="settings-line"><span>Wallpaper</span><span>${state.wallpaper === "win11" ? "Windows 11 Bloom" : state.wallpaper}</span></div>
+    <div class="wallpaper-row">
+      <button class="wallpaper-btn" data-wallpaper="win11">Windows 11 Bloom</button>
+      <button class="wallpaper-btn" data-wallpaper="slate">Slate</button>
+      <button class="wallpaper-btn" data-wallpaper="night">Night</button>
+      <label class="wallpaper-btn">Custom <input id="wallpaper-file" type="file" accept="image/*" hidden></label>
+    </div>
   `,
   apps: () => `
     <h3>Apps</h3>
@@ -401,6 +516,36 @@ function renderSettings(section = "system") {
 
   const cu = document.getElementById("check-updates");
   if (cu) cu.addEventListener("click", () => { cu.textContent = "Up to date"; });
+
+  document.querySelectorAll("[data-wallpaper]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      state.wallpaper = btn.dataset.wallpaper;
+      if (state.wallpaper !== "custom") {
+        state.wallpaperData = "";
+        document.body.style.removeProperty("--wallpaper-image");
+        document.body.style.removeProperty("--wallpaper-opacity");
+      }
+      applyWallpaper();
+      persistState();
+      renderSettings("personalization");
+    });
+  });
+
+  const wf = document.getElementById("wallpaper-file");
+  if (wf) {
+    wf.addEventListener("change", async () => {
+      const file = wf.files?.[0];
+      if (!file) return;
+      const dataUrl = await new Promise((resolve, reject) => {
+        const fr = new FileReader();
+        fr.onload = () => resolve(fr.result);
+        fr.onerror = reject;
+        fr.readAsDataURL(file);
+      });
+      setCustomWallpaper(dataUrl);
+      renderSettings("personalization");
+    });
+  }
 }
 
 async function inflateRaw(data) {
@@ -538,16 +683,42 @@ function wireEvents() {
   });
 
   document.getElementById("start-btn").addEventListener("click", () => togglePanel(startMenu));
-  document.getElementById("widgets-btn").addEventListener("click", () => togglePanel(widgetsPanel));
-  document.getElementById("notif-btn").addEventListener("click", () => togglePanel(notificationsPanel));
+  document.getElementById("top-widgets-btn").addEventListener("click", () => togglePanel(widgetsPanel));
+  document.getElementById("top-notif-btn").addEventListener("click", () => togglePanel(notificationsPanel));
   document.getElementById("quick-btn").addEventListener("click", () => togglePanel(quickSettings));
   document.getElementById("task-view-btn").addEventListener("click", () => togglePanel(taskViewPanel));
+
+  if (globalSearch) {
+    globalSearch.addEventListener("focus", () => {
+      startSearch.value = globalSearch.value;
+      togglePanel(startMenu);
+      startSearch.focus();
+    });
+    globalSearch.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter") return;
+      const q = globalSearch.value.trim().toLowerCase();
+      startSearch.value = globalSearch.value;
+      togglePanel(startMenu);
+      if (q.includes("settings")) openWin("settings-window");
+      else if (q.includes("browser") || q.includes("chrome") || q.includes("internet")) openWin("browser-window");
+      else if (q.includes("terminal") || q.includes("powershell")) openWin("terminal-window");
+      else if (q.includes("explorer") || q.includes("files")) openWin("explorer-window");
+      else if (q.includes("extract")) openWin("extract-window");
+    });
+  }
+
+  if (startSearch) {
+    startSearch.addEventListener("input", () => {
+      if (globalSearch) globalSearch.value = startSearch.value;
+    });
+  }
 
   document.querySelectorAll(".tile").forEach((tile) => tile.addEventListener("click", () => {
     const key = tile.dataset.toggle;
     state.toggles[key] = !state.toggles[key];
     renderTiles();
     renderSettings("system");
+    if (key === "bluetooth") renderBluetoothPanel();
     persistState();
   }));
 
@@ -565,6 +736,44 @@ function wireEvents() {
   });
 
   document.querySelectorAll("[data-settings]").forEach((btn) => btn.addEventListener("click", () => renderSettings(btn.dataset.settings)));
+
+  document.getElementById("browser-go").addEventListener("click", () => navigateBrowser(browserUrl.value));
+  browserUrl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") navigateBrowser(browserUrl.value);
+  });
+  document.getElementById("browser-back").addEventListener("click", () => {
+    if (state.browserIndex <= 0) return;
+    state.browserIndex -= 1;
+    navigateBrowser(state.browserHistory[state.browserIndex], false);
+  });
+  document.getElementById("browser-forward").addEventListener("click", () => {
+    if (state.browserIndex >= state.browserHistory.length - 1) return;
+    state.browserIndex += 1;
+    navigateBrowser(state.browserHistory[state.browserIndex], false);
+  });
+  document.getElementById("browser-refresh").addEventListener("click", () => {
+    navigateBrowser(browserUrl.value, false);
+  });
+  document.getElementById("browser-newtab").addEventListener("click", () => {
+    window.open(normalizeWebUrl(browserUrl.value), "_blank", "noopener");
+  });
+  document.getElementById("browser-download").addEventListener("click", () => {
+    const target = normalizeWebUrl(browserUrl.value);
+    const a = document.createElement("a");
+    a.href = target;
+    a.download = "";
+    a.rel = "noopener";
+    a.target = "_blank";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  });
+  browserFrame.addEventListener("load", () => {
+    browserStatusText.textContent = `Connected: ${browserUrl.value}`;
+  });
+
+  window.addEventListener("online", updateNetworkStatus);
+  window.addEventListener("offline", updateNetworkStatus);
 
   document.getElementById("add-desktop").addEventListener("click", () => {
     state.desktops.push(`Desktop ${state.desktops.length + 1}`);
@@ -627,7 +836,7 @@ function wireEvents() {
     terminalInput.value = "";
     let out = "";
 
-    if (cmd === "help") out = "help, dir, cd <path>, start ms-settings, start explorer, systeminfo";
+    if (cmd === "help") out = "help, dir, cd <path>, start ms-settings, start explorer, start chrome, systeminfo";
     else if (cmd === "dir") out = (fsMap[state.currentPath] || []).map((i) => i.name).join("\n");
     else if (cmd.startsWith("cd ")) {
       const path = norm(cmd.slice(3));
@@ -643,6 +852,9 @@ function wireEvents() {
     } else if (cmd === "start explorer") {
       openWin("explorer-window");
       out = "Explorer opened.";
+    } else if (cmd === "start chrome") {
+      openWin("browser-window");
+      out = "Aster Chrome opened.";
     } else if (cmd === "systeminfo") out = "Windows 11-style Web Preview Build 0.3";
     else out = `'${cmd}' is not recognized in preview shell.`;
 
@@ -713,7 +925,7 @@ function wireEvents() {
 }
 
 function initWindows() {
-  ["explorer-window", "terminal-window", "settings-window", "extract-window", "ai-window"].forEach((id) => {
+  ["explorer-window", "browser-window", "terminal-window", "settings-window", "extract-window", "ai-window"].forEach((id) => {
     if (!state.windowState[id]) {
       const visible = id === "explorer-window";
       state.windowState[id] = { desktop: 0, visible };
@@ -736,3 +948,7 @@ renderTiles();
 renderSettings("system");
 renderExplorer();
 applyTheme();
+applyWallpaper();
+updateNetworkStatus();
+renderBluetoothPanel();
+navigateBrowser(state.browserHistory[state.browserIndex] || "https://example.com", false);

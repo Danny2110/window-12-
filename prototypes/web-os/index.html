@@ -8,6 +8,20 @@
 </head>
 <body>
   <div class="desktop" id="desktop">
+    <header class="top-shell panel">
+      <div class="top-weather">
+        <strong>67 F</strong>
+        <span>Cloudy | San Diego</span>
+      </div>
+      <div class="top-search-wrap">
+        <input id="global-search" class="top-search" placeholder="Search apps, settings, and files" />
+      </div>
+      <div class="top-right">
+        <button class="icon-btn compact" id="top-widgets-btn"><img src="icons/widgets.svg" class="app-icon" alt="">Widgets</button>
+        <button class="icon-btn compact" id="top-notif-btn"><img src="icons/alerts.svg" class="app-icon" alt="">Alerts</button>
+      </div>
+    </header>
+
     <aside class="widgets-panel hidden panel" id="widgets-panel">
       <h3>Widgets</h3>
       <div class="widget-card">Weather: 68 F</div>
@@ -32,6 +46,7 @@
       </div>
       <label>Brightness <input id="brightness" type="range" min="60" max="125" value="100"></label>
       <label>Volume <input id="volume" type="range" min="0" max="100" value="52"></label>
+      <div id="bluetooth-panel" class="small"></div>
     </aside>
 
     <section class="task-view hidden panel" id="task-view-panel">
@@ -44,10 +59,11 @@
     </section>
 
     <section class="start-menu hidden panel" id="start-menu">
-      <input id="start-search" placeholder="Search for apps, settings, files" />
+      <input id="start-search" placeholder="Type here to search" />
       <h4>Pinned</h4>
       <div class="pinned-grid">
         <button data-open="explorer-window"><img src="icons/explorer.svg" class="app-icon" alt="">Explorer</button>
+        <button data-open="browser-window"><img src="icons/browser.svg" class="app-icon" alt="">Chrome</button>
         <button data-open="terminal-window"><img src="icons/terminal.svg" class="app-icon" alt="">Terminal</button>
         <button data-open="settings-window"><img src="icons/settings.svg" class="app-icon" alt="">Settings</button>
         <button data-open="extract-window"><img src="icons/extract.svg" class="app-icon" alt="">ExtractX</button>
@@ -82,6 +98,11 @@
             <input id="explorer-search" placeholder="Search current folder" />
           </div>
           <div class="toolbar">
+            <button data-nav="C:/Users/Demo/">Home</button>
+            <button data-nav="C:/Users/Demo/Downloads/">Downloads</button>
+            <button data-nav="C:/Users/Demo/Documents/">Documents</button>
+          </div>
+          <div class="toolbar">
             <button id="new-folder-btn">New Folder</button>
             <button id="rename-item-btn">Rename</button>
             <button data-open="terminal-window">Open Terminal</button>
@@ -108,6 +129,34 @@
         <pre id="terminal-output">Windows Terminal Preview
 help, dir, cd <path>, start ms-settings, start explorer</pre>
         <div class="terminal-input-row"><span>PS C:\></span><input id="terminal-input" autocomplete="off" /></div>
+      </div>
+    </section>
+
+    <section class="window hidden" id="browser-window" style="top: 94px; left: 130px; width: 1020px; height: 610px;">
+      <div class="titlebar">
+        <span>Aster Chrome</span>
+        <div class="window-controls">
+          <button data-snap="left" data-target="browser-window">Snap L</button>
+          <button data-snap="right" data-target="browser-window">Snap R</button>
+          <button data-snap="max" data-target="browser-window">Max</button>
+          <button class="close" data-close="browser-window">x</button>
+        </div>
+      </div>
+      <div class="content browser-shell">
+        <div class="browser-toolbar">
+          <button id="browser-back" class="browser-nav">←</button>
+          <button id="browser-forward" class="browser-nav">→</button>
+          <button id="browser-refresh" class="browser-nav">⟳</button>
+          <input id="browser-url" value="https://example.com" />
+          <button id="browser-go">Go</button>
+          <button id="browser-newtab">Open Tab</button>
+          <button id="browser-download">Download</button>
+        </div>
+        <div class="browser-status">
+          <span id="network-status">Network: checking...</span>
+          <span id="browser-status-text">Tip: some sites block iframe embedding. Use Open Tab.</span>
+        </div>
+        <iframe id="browser-frame" referrerpolicy="no-referrer" sandbox="allow-downloads allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts"></iframe>
       </div>
     </section>
 
@@ -167,18 +216,17 @@ help, dir, cd <path>, start ms-settings, start explorer</pre>
     </div>
 
     <footer class="taskbar">
-      <button class="icon-btn" id="widgets-btn"><img src="icons/widgets.svg" class="app-icon" alt="">Widgets</button>
       <div class="task-center">
         <button class="icon-btn" id="task-view-btn"><img src="icons/taskview.svg" class="app-icon" alt="">Task View</button>
         <button class="icon-btn" id="start-btn"><img src="icons/start.svg" class="app-icon" alt="">Start</button>
         <button class="icon-btn" data-open="explorer-window"><img src="icons/explorer.svg" class="app-icon" alt="">Explorer</button>
+        <button class="icon-btn" data-open="browser-window"><img src="icons/browser.svg" class="app-icon" alt="">Chrome</button>
         <button class="icon-btn" data-open="terminal-window"><img src="icons/terminal.svg" class="app-icon" alt="">Terminal</button>
         <button class="icon-btn" data-open="settings-window"><img src="icons/settings.svg" class="app-icon" alt="">Settings</button>
         <button class="icon-btn" data-open="extract-window"><img src="icons/extract.svg" class="app-icon" alt="">ExtractX</button>
       </div>
       <div class="tray">
-        <button class="icon-btn" id="quick-btn">Quick</button>
-        <button class="icon-btn" id="notif-btn"><img src="icons/alerts.svg" class="app-icon" alt="">Alerts</button>
+        <button class="icon-btn compact" id="quick-btn">Quick</button>
         <div class="clock" id="clock"></div>
       </div>
     </footer>
