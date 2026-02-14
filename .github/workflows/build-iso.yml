@@ -6,14 +6,28 @@ on:
 jobs:
   iso:
     runs-on: ubuntu-latest
+    container:
+      image: debian:bookworm
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Install build dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends curl ca-certificates build-essential git xz-utils
+      - name: Install Rust toolchain
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o /tmp/rustup-init.sh
+          sh /tmp/rustup-init.sh -y --profile minimal --default-toolchain stable
+          . "$HOME/.cargo/env"
+          rustc --version
+          cargo --version
       - name: Build bootable ISO
-        run: bash installer/scripts/build-iso-linux.sh
+        run: |
+          . "$HOME/.cargo/env"
+          bash installer/scripts/build-iso-linux.sh
       - name: Fix permissions for artifacts
         if: always()
-        run: sudo chown -R $USER:$USER installer/live/work || true
+        run: chmod -R a+rX installer/live/work || true
       - name: Create log bundle
         if: always()
         run: |

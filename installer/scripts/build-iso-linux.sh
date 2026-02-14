@@ -13,7 +13,11 @@ require_cmd() {
   }
 }
 
-require_cmd sudo
+SUDO=""
+if [[ "${EUID:-$(id -u)}" -ne 0 ]]; then
+  require_cmd sudo
+  SUDO="sudo"
+fi
 
 if [[ "$(uname -s)" != "Linux" ]]; then
   echo "ISO build is supported only on Linux hosts." >&2
@@ -23,8 +27,8 @@ fi
 if ! command -v lb >/dev/null 2>&1; then
   if command -v apt-get >/dev/null 2>&1; then
     echo "Installing live-build dependencies..."
-    sudo apt-get update -y
-    sudo apt-get install -y --no-install-recommends live-build debootstrap squashfs-tools xorriso
+    $SUDO apt-get update -y
+    $SUDO apt-get install -y --no-install-recommends live-build debootstrap squashfs-tools xorriso
   else
     echo "Missing required command: lb (live-build)" >&2
     exit 1
@@ -83,13 +87,13 @@ find config -type f -name "*.list*" -o -name "sources.list*" | while read -r f; 
 done
 
 echo "Starting lb build..."
-if ! sudo lb build 2>&1 | tee "$WORK_DIR/lb-build.log"; then
+if ! $SUDO lb build 2>&1 | tee "$WORK_DIR/lb-build.log"; then
   echo "lb build failed; last 200 lines:"
   tail -n 200 "$WORK_DIR/lb-build.log" || true
   exit 100
 fi
 # live-build creates root-owned cache trees; hand ownership back to runner for CI artifact steps.
-sudo chown -R "$(id -u):$(id -g)" "$WORK_DIR" || true
+$SUDO chown -R "$(id -u):$(id -g)" "$WORK_DIR" || true
 popd >/dev/null
 
 echo "ISO build complete. Check: $WORK_DIR/live-image-amd64.hybrid.iso"
